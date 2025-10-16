@@ -38,6 +38,12 @@ ADMIN_PASSWORD = "qwertyuiopasdfghjklzxcvbnm"
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+@app.route("/")
+@app.route("/index")
+def index():
+    return render_template("index.html")
+
 @app.route('/upload_audio', methods=['POST'])
 def upload_audio():
     if 'audio' not in request.files:
@@ -358,3 +364,4 @@ def get_users():
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
+
