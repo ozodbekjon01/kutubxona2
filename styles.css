@@ -1,0 +1,123 @@
+/* 📚 Umumiy sozlamalar */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+/* 📌 Header */
+header {
+    background: rgba(255, 255, 255, 0.1);
+    text-align: center;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 26px;
+    letter-spacing: 1px;
+}
+
+/* 📖 Kitob kartasi */
+.book-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+}
+
+.book-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 320px;
+    transition: 0.3s;
+}
+
+.book-card:hover {
+    transform: scale(1.05);
+}
+
+.book-card img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.book-info {
+    margin-top: 15px;
+}
+
+.book-info h2 {
+    font-size: 15px;
+    margin: 10px 0;
+}
+
+.book-info p {
+    font-size: 12px;
+}
+
+/* 🎧 Audio bo‘limi */
+.audio-section {
+    margin-top: 25px;
+    width: 90%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.audio-section h2 {
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.audio-item {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.audio-item p {
+    font-size: 16px;
+    margin: 0;
+}
+
+/* 📥 Yuklab olish tugmasi */
+.btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 18px;
+    background: #ff9800;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #e68900;
+    transform: scale(1.1);
+}
+
+/* 📱 Mobil moslashuv */
+@media (max-width: 768px) {
+    .book-card {
+        width: 90%;
+    }
+}
+
+

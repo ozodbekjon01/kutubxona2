@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <link rel="icon" type="image/png" href="favicon.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Kitob Tafsilotlari</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
+    <style>
+        /* 🎧 Audio pleerning uch nuqtasini yashirish (faqat WebKit brauzerlarda ishlaydi) */
+        audio::-webkit-media-controls-overflow-button {
+        display: none !important;
+}
+        }
+        
+        /* 🎧 Uch nuqta tugmasi ustiga chiqadigan tugma */
+        
+        
+        
+
+        
+    </style>
+</head>
+<body>
+    
+
+    <div class="book-container">
+        <div class="book-card">
+            <img src="im.png" alt="Logotip">
+            <img id="book-cover" src="images/default-book.jpg" alt="Kitob Muqovasi">
+            <div class="book-info">
+                <h2 id="book-title">Kitob nomi</h2>
+                <p><strong>Yuklagan:</strong> <span id="book-uploader"></span></p>
+                
+                <div class="button-group">
+                    
+                    <a id="read-link" href="#" class="btn read">
+                        📖 O‘qish
+                    </a>
+
+                    <button class="btn share" onclick="shareBook()">
+                        🔗 Ulashish
+                    </button>
+
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- 🎧 Audio Bo'limi -->
+        <div class="audio-section">
+            <h2>🎧 Kitob audiosi</h2>
+            <div id="audio-player">
+                <audio controls>
+    <source src="http://127.0.0.1:5000/example.mp3" type="audio/mpeg">
+    Brauzeringiz audio formatni qo‘llab-quvvatlamaydi!
+</audio>
+
+                <p>🔍 Audio fayllar qidirilmoqda...</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookTitle = urlParams.get("title");
+
+            if (!bookTitle) {
+                alert("Kitob topilmadi!");
+                return;
+            }
+
+            // 📌 **Kitob ma'lumotlarini olish**
+            fetch(`http://127.0.0.1:5000/book?title=${encodeURIComponent(bookTitle)}`)
+    .then(response => response.json())
+    .then(book => {
+        if (book.error) {
+            alert(book.error);
+            return;
+        }
+
+        document.getElementById("book-title").textContent = book.title;
+        document.getElementById("book-cover").src = book.cover;
+        document.getElementById("book-uploader").textContent = book.username;
+        
+        document.getElementById("read-link").href = `reader.html?file=${encodeURIComponent("http://127.0.0.1:5000/" + book.filename)}`;
+
+
+        // 🎵 **Kitob papkasidagi audio fayllarni olish**
+        fetch(`http://127.0.0.1:5000/book_audio/${encodeURIComponent(book.title)}`)
+            .then(response => response.json())
+            .then(data => {
+                const audioPlayer = document.getElementById("audio-player");
+                audioPlayer.innerHTML = "";
+
+                if (data.audio.length > 0) {
+                    data.audio.forEach((audioSrc, index) => {
+                        const audioDiv = document.createElement("div");
+                        audioDiv.classList.add("audio-item");
+
+                        audioDiv.innerHTML = `
+                            <p><strong>${index + 1}-audio:</strong></p>
+                            <audio controls preload="auto">
+                                <source src="${audioSrc}" type="audio/mpeg">
+                                Brauzeringiz audio formatni qo‘llab-quvvatlamaydi!
+                            </audio>
+                            
+                        `;
+                        audioPlayer.appendChild(audioDiv);
+
+                        const audioElement = audioDiv.querySelector("audio");
+
+                        // ⏳ Saqlangan vaqtni tiklash
+                        const savedTime = localStorage.getItem(`audio-${audioSrc}`);
+                        if (savedTime) {
+                            audioElement.currentTime = parseFloat(savedTime);
+                        }
+
+                        // 🎵 Har bir audio uchun vaqtni saqlash
+                        audioElement.addEventListener("timeupdate", function() {
+                            localStorage.setItem(`audio-${audioSrc}`, audioElement.currentTime);
+                        });
+
+                        // 🔄 Qo‘lda vaqtni oldinga-orqaga surish ishlashi uchun
+                        audioElement.addEventListener("seeking", function(event) {
+                            console.log("Foydalanuvchi vaqtni o‘zgartiryapti:", event.target.currentTime);
+                        });
+
+                    });
+
+                    // 🎯 Klaviatura yordamida audio boshqarish
+                    document.addEventListener("keydown", function (e) {
+                        const audio = document.querySelector("audio");
+
+                        if (audio && !audio.paused) {  // Faqat o‘ynayotgan audio uchun ishlaydi
+                            if (e.key === "ArrowRight") {
+                                audio.currentTime += 5; // 5 soniya oldinga
+                            } else if (e.key === "ArrowLeft") {
+                                audio.currentTime -= 5; // 5 soniya orqaga
+                            }
+                        }
+                    });
+
+                } else {
+                    audioPlayer.innerHTML = "<p>📌 Bu kitob uchun audio mavjud emas.</p>";
+                }
+            })
+            .catch(error => console.error("Audio yuklashda xatolik:", error));
+    })
+    .catch(error => console.error("Xatolik:", error));
+});
+
+        // 🔗 Kitobni ulashish funksiyasi
+        function shareBook() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert("📎 Kitob havolasi nusxalandi!");
+            }).catch(err => {
+                console.error("Nusxalashda xatolik:", err);
+            });
+        }
+    </script>
+
+</body>
+</html>

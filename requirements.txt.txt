@@ -1,0 +1,9 @@
+flask
+flask_cors
+os
+json
+shutil
+database
+sqlalchemy.orm
+sqlalchemy
+werkzeug.utils

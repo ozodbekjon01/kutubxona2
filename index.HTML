@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <link rel="icon" type="image/png" href="favicon.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberLibrary.uz</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/4e0d0fae80.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#"><img src="im.png" alt="Logotip" width="300"></a>
+            <form class="d-flex" id="searchForm">
+                <input class="form-control me-2" type="search" id="searchInput" placeholder="Kitob qidirish" aria-label="Search">
+                <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button>
+            </form>
+            <a href="profile.html" class="btn btn-light"><i class="fas fa-user"></i> Profil</a>
+        </div>
+    </nav>
+    <div id="searchResults" class="mt-3"></div> <!-- Qidiruv natijalari shu yerga chiqariladi -->
+
+    
+    <!-- Trenddagi Kitoblar -->
+    <div class="container mt-4">
+        <h2 class="text-center">Eng yangi kitoblar</h2>
+        <div class="row" id="book-list">
+            
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-4">
+        <p>&copy; 2025 CyberLibrary.uz | Barcha huquqlar himoyalangan.
+        Talab va takliflaringiz bo'lsa <a href="https://t.me/Ozodbek_2616" class="text-info">admin</a> bilan bog'lanishingiz mumkin</p>
+    </footer>
+    <script>
+fetch("/auto-login")
+    .then(response => response.json())
+    .then(data => {
+        if (data.message.includes("Xush kelibsiz")) {
+            alert(data.message);  // Foydalanuvchi avtomatik login qilindi
+        }
+    });
+</script>
+<style type="text/css">
+    .card {
+    width: 100%; /* Kartaning eni ustunning kengligiga mos keladi */
+    height: 0; /* Balandlikni nisbiy belgilash uchun */
+    padding-top: 165%; /* Kartaning balandligi enining 200% bo‘ladi (2:1 nisbati) */
+    position: relative;
+}
+
+.card-img-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Rasmni kartaga to‘g‘ri joylashishini ta’minlaydi */
+}
+
+.card-body {
+    position: absolute;
+    bottom: 0;
+    height: 25%;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.7); /* Matn aniq ko‘rinishi uchun */
+    padding: 0px;
+    text-align: center;
+.card-title {
+    font-size: 19px;
+}
+.card-text{
+    font-size: 12px;
+}
+
+}
+
+@media (min-width: 2000px) {
+    .custom-col { width: 16.66%; } /* 6 ta ustun */
+}
+
+@media (min-width: 1400px) and (max-width: 1999px) {
+    .custom-col { width: 20%; } /* 5 ta ustun */
+}
+
+@media (min-width: 1170px) and (max-width: 1399px) {
+    .custom-col { width: 25%; } /* 4 ta ustun */
+}
+
+@media (min-width: 930px) and (max-width: 1169px) {
+    .custom-col { width: 33.33%; } /* 3 ta ustun */
+}
+
+@media (max-width: 929px) {
+    .custom-col { width: 50%; } /* 2 ta ustun */
+}
+
+.custom-img {
+    aspect-ratio: 1 / 2; /* Balandligi enidan 2 barobar katta bo‘lsin */
+    object-fit: cover;
+}
+
+</style>
+
+
+
+
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

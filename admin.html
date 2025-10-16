@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/4e0d0fae80.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container text-white">
+            <a class="navbar-brand" href="#">
+                <img src="im.png" alt="Logotip" width="300">
+            </a>
+            <h2>
+                <i class="fas fa-user-circle"></i> 
+                <span>adminstrator</span>
+            </h2>
+            <a href="index.html" class="btn btn-light"><i class="fas fa-home"></i></a>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-tools"></i> Admin Panel</h2>
+            <button id="logoutBtn" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Chiqish
+            </button>
+        </div>
+        
+        <hr>
+
+        <div class="mb-4">
+            <h3>Kitoblar ro'yxati</h3>
+            <input type="text" id="bookSearch" class="form-control mb-2" placeholder="Kitob nomi bo‘yicha qidirish...">
+            <table class="table table-bordered" id="booksTable">
+                <thead>
+                    <tr>
+                        <th>Sarlavha</th>
+                        <th>Muqova</th>
+                        
+                        <th>yuklagan</th>
+                        <th>Amallar</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="mb-4">
+            <h3>Foydalanuvchilar ro'yxati</h3>
+            <input type="text" id="userSearch" class="form-control mb-2" placeholder="Foydalanuvchi nomi bo‘yicha qidirish...">
+            <table class="table table-bordered" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>Foydalanuvchi nomi</th>
+                        <th>Parol</th>
+                        <th>Holat</th>
+                        <th>Amallar</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Audio yuklash modal oynasi -->
+    <div id="audioUploadModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Audio qo‘shish</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="audioName">Audio nomi:</label>
+                    <input type="text" id="audioName" class="form-control mb-2" placeholder="Audio nomini kiriting">
+                    
+                    <label for="audioFile">Audio fayl tanlang:</label>
+                    <input type="file" id="audioFile" class="form-control" accept="audio/*">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <button type="button" class="btn btn-primary" onclick="submitAudio()">Yuklash</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", function() {
+            localStorage.removeItem("username");
+            localStorage.removeItem("admin");
+            window.location.href = "login.html";
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadBooks();
+            loadUsers();
+        });
+
+
+        document.getElementById("bookSearch").addEventListener("input", function() {
+    let searchText = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#booksTable tbody tr");
+
+    rows.forEach(row => {
+        let title = row.cells[0].textContent.toLowerCase();
+        if (title.includes(searchText)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+});
+
+
+        document.getElementById("userSearch").addEventListener("input", function() {
+    let searchText = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#usersTable tbody tr");
+
+    rows.forEach(row => {
+        let username = row.cells[0].textContent.toLowerCase();
+        if (username.includes(searchText)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+});
+
+
+
+        let booksData = [];
+        let usersData = [];
+        let currentBookTitle = "";
+
+        async function loadBooks() {
+            try {
+                let response = await fetch("http://127.0.0.1:5000/books");
+                booksData = await response.json();
+                displayBooks(booksData);
+            } catch (error) {
+                console.error("Kitoblarni yuklashda xato:", error);
+            }
+        }
+
+        function displayBooks(books) {
+            let booksTableBody = document.getElementById("booksTable").querySelector("tbody");
+            booksTableBody.innerHTML = "";
+            books.forEach((book,index) => {
+                let row = `
+                    <tr>
+                        <td>${book.title}</td>
+                        
+                        <td><img src="${book.cover}" alt="Muqova" style="width:50px;"></td>
+                        
+                        <td>${book.username}</td>
+                        
+                        <td>
+                            <a href="http://127.0.0.1:5000/${book.filename}" class="btn btn-sm btn-primary mt-1">📥 Yuklab olish</a>
+                            
+                            <a href="book.html?title=${encodeURIComponent(book.title)}" class="btn btn-sm btn-info mt-1">Kitobni ko‘rish</a>
+                            <button class="btn btn-warning btn-sm" onclick="uploadAudio('${book.title}')">
+                                <i class="fas fa-microphone"></i> Audio qo‘shish
+                            </button>
+                        
+                            <button class="btn btn-danger btn-sm" onclick="deleteBook('${encodeURIComponent(book.title)}')">
+                                O'chirish
+                            </button>
+                        </td>
+                        <td>${index + 1}</td>
+                    </tr>`;
+                booksTableBody.innerHTML += row;
+            });
+        }
+
+        async function deleteBook(title) {
+            if (!confirm(`"${decodeURIComponent(title)}" nomli kitobni o'chirmoqchimisiz?`)) return;
+            try {
+                let response = await fetch(`http://127.0.0.1:5000/books/${title}`, { method: "DELETE" });
+                let result = await response.json();
+                alert(result.message);
+                if (response.ok) loadBooks();
+            } catch (error) {
+                console.error("Kitobni o'chirishda xato:", error);
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                let response = await fetch("http://127.0.0.1:5000/users");
+                usersData = await response.json();
+                displayUsers(usersData);
+            } catch (error) {
+                console.error("Foydalanuvchilarni yuklashda xato:", error);
+            }
+        }
+
+        function displayUsers(users) {
+            let usersTableBody = document.getElementById("usersTable").querySelector("tbody");
+            usersTableBody.innerHTML = "";
+            users.forEach((user,index) => {
+                let status = user.isBlocked ? "⛔ Bloklangan" : "✅ Aktiv";
+                let rowClass = user.isBlocked ? "table-danger" : "";
+                let row = `
+                    <tr class="${rowClass}">
+                        <td>${user.username}</td>
+                        <td>${user.password}</td>
+                        <td>${status}</td>
+                        <td>
+                            ${user.isBlocked ? `
+                                <button class="btn btn-success btn-sm" onclick="unblockUser('${user.username}')">
+                                    <i class="fas fa-unlock"></i> Blokdan chiqarish
+                                </button>` 
+                            : `
+                                <button class="btn btn-warning btn-sm" onclick="blockUser('${user.username}')">
+                                    <i class="fas fa-lock"></i> Bloklash
+                                </button>`}
+                        </td>
+                        <td>${index + 1}</td>
+                    </tr>`;
+                usersTableBody.innerHTML += row;
+            });
+        }
+
+        async function blockUser(username) {
+            try {
+                let response = await fetch(`http://127.0.0.1:5000/users/block/${username}`, { method: "PUT" });
+                let result = await response.json();
+                alert(result.message);
+                loadUsers();  // Foydalanuvchilarni qayta yuklash
+            } catch (error) {
+                console.error("Foydalanuvchini bloklashda xato:", error);
+            }
+        }
+
+        async function unblockUser(username) {
+            
+            try {
+                let response = await fetch(`http://127.0.0.1:5000/users/block/${username}`, { method: "PUT" });
+                let result = await response.json();
+                alert(result.message);
+                loadUsers();  // Foydalanuvchilarni qayta yuklash
+            } catch (error) {
+                console.error("Foydalanuvchini blokdan chiqarishda xato:", error);
+            }
+        }
+
+
+
+
+
+        function uploadAudio(bookTitle) {
+            currentBookTitle = bookTitle;
+            document.getElementById("audioName").value = "";
+            document.getElementById("audioFile").value = "";
+            let modal = new bootstrap.Modal(document.getElementById("audioUploadModal"));
+            modal.show();
+        }
+
+        async function submitAudio() {
+            let audioName = document.getElementById("audioName").value.trim();
+            let audioFile = document.getElementById("audioFile").files[0];
+
+            if (!audioName || !audioFile) {
+                alert("Iltimos, audio nomi va faylni tanlang!");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("audio", audioFile);
+            formData.append("title", currentBookTitle);
+            formData.append("audio_name", audioName);
+
+            try {
+                let response = await fetch("http://127.0.0.1:5000/upload_audio", { method: "POST", body: formData });
+                let result = await response.json();
+                alert(result.message);
+                bootstrap.Modal.getInstance(document.getElementById("audioUploadModal")).hide();
+            } catch (error) {
+                console.error("Audio yuklashda xato:", error);
+            }
+        }
+    
+    </script>
+</body>
+</html>

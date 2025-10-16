@@ -1,0 +1,38 @@
+[
+    {
+        "title": "yaxshiyam sen borsan",
+        "filename": "uploads/yaxshiyam sen borsan/kitob.pdf",
+        "cover": "images\\download.jpg",
+        "username": "adminstrator"
+    },
+    {
+        "title": "U o‘lganmi yo tirik Mark Tven",
+        "filename": "uploads/U o‘lganmi yo tirik Mark Tven/kitob.pdf",
+        "cover": "images\\mark.jpg",
+        "username": "adminstrator"
+    },
+    {
+        "title": "Sariq devni minib",
+        "filename": "uploads/Sariq devni minib/kitob.pdf",
+        "cover": "images\\sariq.jpg",
+        "username": "adminstrator"
+    },
+    {
+        "title": "Kaktuslar ham gullaydi Songul Unsal",
+        "filename": "uploads/Kaktuslar ham gullaydi Songul Unsal/kitob.pdf",
+        "cover": "images\\kaktuslar.jpg",
+        "username": "adminstrator"
+    },
+    {
+        "title": "fghjk.,mnbvcvb",
+        "filename": "uploads/fghjk.,mnbvcvb/kitob.pdf",
+        "cover": "images\\default-book.jpg",
+        "username": "adminstrator"
+    },
+    {
+        "title": "qwertyuiop",
+        "filename": "uploads/qwertyuiop/kitob.pdf",
+        "cover": "images\\default-book.jpg",
+        "username": "adminstrator"
+    }
+]
